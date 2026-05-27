@@ -1,14 +1,12 @@
 name: MAIN PIPELINE
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   step1:
     uses: ./.github/workflows/step1.yml
     secrets: inherit
 
-  step2:
-    needs: step1
-    uses: ./.github/workflows/step2.yml
-    secrets: inherit

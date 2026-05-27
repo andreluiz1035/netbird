@@ -66,8 +66,8 @@ resource "azurerm_linux_virtual_machine" "vm" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
 
-  size           = "Standard_B1s"
-  computer_name  = "netbirdvm"
+  size          = "Standard_B1s"
+  computer_name = "netbirdvm"
 
   admin_username = var.admin_username
   admin_password = var.admin_password
@@ -89,4 +89,18 @@ resource "azurerm_linux_virtual_machine" "vm" {
     sku       = "22_04-lts"
     version   = "latest"
   }
+
+  # 🚀 CLOUD-INIT (NETBIRD AUTO INSTALL)
+  custom_data = base64encode(<<EOF
+#cloud-config
+package_update: true
+package_upgrade: true
+
+runcmd:
+  - apt update -y
+  - apt install -y curl
+  - curl -fsSL https://pkgs.netbird.io/install.sh | bash
+  - netbird up
+EOF
+  )
 }
