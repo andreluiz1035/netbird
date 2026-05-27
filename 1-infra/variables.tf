@@ -21,3 +21,8 @@ variable "admin_password" {
   type      = string
   sensitive = true
 }
+
+variable "netbird_setup_key" {
+  type      = string
+  sensitive = true
+}

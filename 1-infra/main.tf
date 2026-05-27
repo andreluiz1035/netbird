@@ -90,7 +90,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
     version   = "latest"
   }
 
-  # 🚀 CLOUD-INIT (NETBIRD AUTO INSTALL)
+  # 🚀 CLOUD-INIT (NETBIRD AUTO CONNECT)
   custom_data = base64encode(<<EOF
 #cloud-config
 package_update: true
@@ -99,8 +99,12 @@ package_upgrade: true
 runcmd:
   - apt update -y
   - apt install -y curl
+
   - curl -fsSL https://pkgs.netbird.io/install.sh | bash
-  - netbird up
+
+  - sleep 10
+
+  - netbird up --setup-key ${var.netbird_setup_key}
 EOF
   )
 }
