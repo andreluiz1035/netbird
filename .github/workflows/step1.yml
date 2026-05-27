@@ -1,0 +1,37 @@
+name: Step 1 - Infra
+
+on:
+  workflow_call:
+
+jobs:
+  infra:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Terraform Init
+        working-directory: ./1-infra
+        run: terraform init
+
+      - name: Terraform Apply
+        working-directory: ./1-infra
+        run: terraform apply -auto-approve
+
+      - name: Output IP
+        working-directory: ./1-infra
+        run: terraform output -raw public_ip > ip.txt
+
+      - name: Upload IP
+        uses: actions/upload-artifact@v4
+        with:
+          name: vm-ip
+          path: 1-infra/ip.txt
